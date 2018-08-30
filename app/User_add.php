@@ -2,13 +2,10 @@
 
 namespace App;
 
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 
-class User extends Authenticatable
+class User_add extends Model
 {
-    use Notifiable;
-
     //1.用户模型关联表
     public $table = 'blog_user';
     //2.关联表的主键
