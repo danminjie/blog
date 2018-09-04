@@ -7,6 +7,9 @@ use App\Http\Controllers\Controller;
 use App\Org\code\Code;
 use Gregwar\Captcha\CaptchaBuilder; 
 use Gregwar\Captcha\PhraseBuilder;
+use App\Model\User;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 class LoginController extends Controller
 {
@@ -67,8 +70,77 @@ class LoginController extends Controller
 			'password.alpha_dash'=>'密码必须是数字字母下划线',
 		];
 		$validator = Validator::make($input,$rule,$msg);
-		if ($validator->fails()) {
-			return redirect('admin/login')->withErrors($validator)->withInput();
-		}
+		//验证码验证
+	    if (strtolower($input['code']) != strtolower(\Session::get('code'))) {
+	        return back()
+	            ->withErrors('验证码错误!');
+	    }else{
+			if ($validator->fails()) {
+				return redirect('admin/login')->withErrors($validator)->withInput();
+			}else{
+				//3.验证是否有此用户
+				$user = User::where('user_name',$input['username'])->first();
+				// var_dump($user);
+				if ($input['username'] != $user->user_name) {
+					return redirect('admin/login')->withErrors('不存在该用户')->withInput();
+					// return redirect('admin/login')->withErrors($user);
+				}else if($input['password'] != Crypt::decrypt($user->user_pass)){
+					return redirect('admin/login')->withErrors('密码不正确')->withInput();
+				}else{
+					//4.保存用户信息到session中
+					session()->put('user',$user->user_name);
+					session()->put('islogin',1);
+					//5.跳转到后台首页		
+					return redirect('admin/index');			
+				}
+
+				
+			}	    	
+	    }
+	}
+
+	//后台首页
+	public function index()
+	{
+    	return view('admin.index');
+	}
+
+	//后台欢迎页
+	public function welcome()
+	{
+    	return view('admin.welcome');
+	}	
+
+	//退出登录
+	public function logout()
+	{
+		session()->flush();
+		//跳转到登录页面
+		return redirect('admin/login');
+	}
+	//加密算法
+	public function jiami()
+	{
+		//md5加密
+		// $str = 'yan'.'123456';
+		// return md5($str);
+		
+		//哈希加密
+		// $str = '123456';
+		// $hash = Hash::make($str);
+		// if (Hash::check($str,$hash)) {
+		// 	return '密码正确';
+		// }else{
+		// 	return '密码错误';
+		// }
+
+		//crypt 加密
+		// $str = '123456';
+		// $crypt = Crypt::encrypt($str);
+		// return $crypt;
+		//解密
+		$crypt_str = 'eyJpdiI6InRmMnFtZ3U0eGt6UHo3SVpYU083Z1E9PSIsInZhbHVlIjoiSlk3V1k2NTdCR0NMTTlaT0RXbG15Zz09IiwibWFjIjoiMTBiMmUwNjNlY2I2NTJmY2Y3MmJiM2U5Yzc2ODM2YTNlYTY0N2U5OTQ2MmJlYzg1MDk4ODA5ZjcxNzc0M2FmMSJ9';
+		$res = Crypt::decrypt($crypt_str);
+		var_dump($res);
 	}
 }
