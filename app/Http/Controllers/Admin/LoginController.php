@@ -88,7 +88,7 @@ class LoginController extends Controller
 					return redirect('admin/login')->withErrors('密码不正确')->withInput();
 				}else{
 					//4.保存用户信息到session中
-					session()->put('user',$user->user_name);
+					session()->put('user',$user);
 					session()->put('islogin',1);
 					//5.跳转到后台首页		
 					return redirect('admin/index');			
@@ -117,6 +117,12 @@ class LoginController extends Controller
 		session()->flush();
 		//跳转到登录页面
 		return redirect('admin/login');
+	}
+
+	//没有权限对应的跳转
+	public function noaccess()
+	{
+		return view('admin.errors.noaccess');
 	}
 	//加密算法
 	public function jiami()

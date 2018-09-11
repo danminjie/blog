@@ -20,4 +20,15 @@ class User extends Model
     
      //是否维护create_at 和 updated_at字段
     public $timestamps = false;
+   
+    //跟Role的关联模型
+    public function userrole()
+    {
+        return $this->belongsToMany(
+            'App\Model\Role',
+            'user_role',
+            'user_id',
+            'role_id'
+        );
+    }       
 }

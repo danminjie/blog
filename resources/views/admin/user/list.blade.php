@@ -10,6 +10,7 @@
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="{{ asset('admin/css/font.css') }}">
     <link rel="stylesheet" href="{{ asset('admin/css/xadmin.css') }}">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
     <script type="text/javascript" src="{{ asset('admin/lib/layui/layui.js') }}" charset="utf-8"></script>
     <script type="text/javascript" src="{{ asset('admin/js/xadmin.js') }}"></script>
@@ -48,6 +49,15 @@
         <button class="layui-btn" onclick="x_admin_show('添加用户','{{ url('admin/user/create') }}',600,400)"><i class="layui-icon"></i>添加</button>
         <span class="x-right" style="line-height:40px">共有数据：{{$total}} 条</span>
       </xblock>
+      @if (count($errors) > 0)
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+      @endif      
       <table class="layui-table">
         <thead>
           <tr>
@@ -84,9 +94,12 @@
               <a onclick="member_start(this,'{{$v->user_id}}')" href="javascript:;"  title="启用">
                 <i class="layui-icon">&#xe62f;</i>
               </a> @endif              
+              <a title="授权"  href="{{ url('admin/user/auth/'.$v->user_id) }}">
+                <i class="layui-icon">&#xe612;</i>
+              </a>  
               <a title="编辑"  onclick="x_admin_show('编辑','{{ url('admin/user/'.$v->user_id.'/edit') }}',600,400)" href="javascript:;">
                 <i class="layui-icon">&#xe642;</i>
-              </a>
+              </a>              
               {{-- <a onclick="x_admin_show('修改密码','member-password.html',600,400)" title="修改密码" href="javascript:;">
                 <i class="layui-icon">&#xe631;</i>
               </a> --}}
@@ -157,6 +170,9 @@
       }      
       /*用户-删除*/
       function member_del(obj,id){
+        if(id == 1){
+          layer.msg('不能删除超级管理员!',{icon:5,time:1000});
+        }else{
           layer.confirm('确认要删除吗？',function(index){
               //发异步删除数据
               $.post('/admin/user/'+id, {"_method": "DELETE","_token":"{{csrf_token()}}"}, function(data) {
@@ -168,7 +184,9 @@
                 }
                 
               });
-          });
+          });          
+        }
+          
       }
 
       function delAll (argument) {
@@ -176,6 +194,9 @@
         var ids = [];
         $(".layui-form-checked").not('.header').each(function(i,v){
           var u = $(v).attr('data-id');
+          if(u == 1){
+            return false;
+          }
           ids.push(u);
         });
         layer.confirm('确认要删除吗？',function(index){
@@ -188,7 +209,6 @@
               }
             });
             //捉到所有被选中的，发异步进行删除
-            
         });
       }
     </script>

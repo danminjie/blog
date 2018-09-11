@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Model\User;
+use App\Model\Role;
+use App\Model\Permission;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Crypt;
@@ -208,5 +210,39 @@ class UserController extends Controller
             ];            
         }
         return $data;                   
-    }            
+    } 
+
+    //角色管理
+    public function auth($id)
+    {
+        //获取当前用户
+        $user = User::find($id);
+        //获取所有的角色列表
+        $role = Role::get();
+        //获取当前角色拥有的权限
+        $own_perms = $user->userrole;
+        //角色拥有的权限的id
+        // var_dump($own_perms);exit;
+        $own_pers = array();
+        foreach ($own_perms as $v) {
+            $own_pers[] =$v->id;
+        }
+        return view('admin.user.auth',['user'=>$user,'role'=>$role,'own_pers'=>$own_pers]);
+    }
+
+    //执行角色处理
+    public function doauth(Request $request)
+    {
+        $input = $request->except('_token');
+        //删除当前角色已有的权限
+        \DB::table('user_role')->where('user_id',$input['user_id'])->delete();
+        //添加新授予的权限
+        if (!empty($input['role_id'])) {
+            foreach ($input['role_id'] as $v) {
+            \DB::table('user_role')->insert(['user_id'=>$input['user_id'],'role_id'=>$v]);
+            }
+        }
+
+        return redirect('admin/user')->withErrors('授权成功');
+    }               
 }
