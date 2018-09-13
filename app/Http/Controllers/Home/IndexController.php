@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Model\Cate;
 use App\Model\Article;
 use App\Model\Collect;
+use App\Model\Comment;
 
 
 class IndexController extends CommonController
@@ -83,20 +84,61 @@ class IndexController extends CommonController
     public function list($id)
     {
     	$lists = Article::orderBy('art_status','DESC')->where('cate_id',$id)->paginate(2);
-    	$catename = Cate::find($id);	
+    	$catename = Cate::find($id);
     	return view('home.lists',['lists'=>$lists,'catename'=>$catename]);
     }
 
-    //留言视图
-    public function message()
+    //详情
+    public function detail(Request $request,$id)
     {
-    	return view('home.liuyan');
+        //统计留言
+        $total = Comment::where(['post_id'=>$id])->count();
+        //获取留言列表
+        $msg = Comment::orderBy('create_time','DESC')->where(['parent_id'=>0,'post_id'=>$id])->paginate(100);
+        //文章的查看次数+1
+        \DB::table('article')
+            ->where('art_id', $id)
+            ->increment('art_view');
+        //获取指定id的文章
+        $art = Article::where('art_id',$id)->first();
+        //获取当前文章的类别
+        $catename = Cate::where('cate_id',$art->cate_id)->first();
+        // var_dump($catename);exit;
+        //获取相关文章内容
+        $about = Article::where('cate_id',$art->cate_id)->take(4)->get()->toArray();
+        //上一篇
+        $prev = Article::where('art_id','<',$id)->orderBy('art_id','desc')->first();
+        //下一篇
+        $next = Article::where('art_id','>',$id)->orderBy('art_id','asc')->first();
+
+        return view('home.detail',['art'=>$art,'catename'=>$catename,'about'=>$about,'prev'=>$prev,'next'=>$next,'total'=>$total,'msg'=>$msg]);
     }
 
     //处理留言内容
-    public function domessage()
+    public function dodetmsg(Request $request)
     {
-
+        $input = $request->except('_token');
+        $input['create_time'] = time();
+        $input['parent_id']   = 0;
+        $res = Comment::insert($input);
+        if ($res) {
+            return back()->with('msg','留言成功,自行刷新查看');
+        }else{
+            return back()->with('msg','留言失败,请重试,谢谢！');
+        }
     }
+
+    //处理留言回复
+    public function dotmsghuifu(Request $request)
+    {
+        $input = $request->except('_token');
+        $input['create_time'] = time();
+        $res = Comment::insert($input);
+        if ($res) {
+            return back()->with('msg','留言成功,自行刷新查看');
+        }else{
+            return back()->with('msg','留言失败,请重试,谢谢！');
+        }
+    }       
 
 }

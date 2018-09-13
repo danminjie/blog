@@ -90,6 +90,10 @@ class LoginController extends Controller
 					//4.保存用户信息到session中
 					session()->put('user',$user);
 					session()->put('islogin',1);
+					$log['user_name'] = $user->user_name;
+					$log['logintime'] = time();
+					$log['ip'] 		  = $_SERVER["REMOTE_ADDR"];
+					\DB::table('loginlog')->insert($log);
 					//5.跳转到后台首页		
 					return redirect('admin/index');			
 				}
@@ -108,13 +112,31 @@ class LoginController extends Controller
 	//后台欢迎页
 	public function welcome()
 	{
-    	return view('admin.welcome');
+		//获取最近登录的一条记录
+		$log = \DB::table('loginlog')->orderBy('id','DESC')->first();
+		//获取会员总数
+		$usertotal = \DB::table('homeuser')->count();
+		//文章总数
+		$arttotal = \DB::table('article')->count();
+		//管理员总数
+		$admintotal = \DB::table('user')->count();
+		$permission = \DB::table('permission')->count();
+		$role = \DB::table('role')->count();
+
+    	return view('admin.welcome',[
+    		'log'       => $log,
+    		'usertotal' => $usertotal,
+    		'arttotal'  => $arttotal,
+    		'admintotal'=> $admintotal,
+    		'permission'=> $permission,
+    		'role'      => $role,
+    	]);
 	}	
 
 	//退出登录
 	public function logout()
 	{
-		session()->flush();
+		session()->flush('user');
 		//跳转到登录页面
 		return redirect('admin/login');
 	}

@@ -27,9 +27,9 @@
 
           @foreach($links as $k=>$v)
             @if(fmod($k,2) == 0)
-              <li class="tinbookmark-list list-left"><i class="fa fa-angle-right"></i><a href="{{ url('$v->link_url') }}" title="{{ $v->link_name }}" target="_blank">{{ $v->link_name }}</a></li>
+              <li class="tinbookmark-list list-left"><i class="fa fa-angle-right"></i><a href="{{$v->link_url}}" title="{{ $v->link_name }}" target="_blank">{{ $v->link_name }}</a></li>
             @else
-              <li class="tinbookmark-list list-right"><i class="fa fa-angle-right"></i><a href="{{ url('$v->link_url') }}" title="{{ $v->link_name }}" target="_blank">{{ $v->link_name }}</a></li>
+              <li class="tinbookmark-list list-right"><i class="fa fa-angle-right"></i><a href="{{$v->link_url}}" title="{{ $v->link_name }}" target="_blank">{{ $v->link_name }}</a></li>
             @endif
           @endforeach
           
@@ -44,8 +44,7 @@
           @endphp
          <li>文章总数：<span>{{ Article::count() }}</span> 篇</li> 
          <li>评论总数：<span>{{ Comment::count() }}</span> 条</li> 
-         <li>标签数量：<span>{{$tagtotal}}</span> 个</li> 
-         <li>链接总数：<span>11</span> 个</li> 
+         <li>标签数量：<span>{{$tagtotal}}</span>个</li>  
          <li>建站日期：<span>2017-08-05</span></li> 
         </ul> 
         <div class="clear"></div> 
@@ -56,3 +55,40 @@
       <script type="text/javascript">
       	$('.site_loading').animate({'width':'78%'},50);  //第三个节点
       </script>
+      <script type="text/javascript" src="{{ asset('home/js/jquery.min.js?ver=4.3.6') }}"></script> 
+      <script type="text/javascript" src="{{ asset('home/js/layer.js') }}"></script> 
+    <script>
+      $('button#subscribe').click(function(){
+        email = $('input#subscribe').val();
+        if(email == ''){
+          layer.msg('邮箱不能为空',{time:3000,icon:5});
+          return false;
+        }else if(email==''||(!email.match('^([a-zA-Z0-9_-])+((\.)?([a-zA-Z0-9_-])+)+@([a-zA-Z0-9_-])+(\.([a-zA-Z0-9_-])+)+$'))){
+          layer.msg('请输入正确邮箱',{time:3000,icon:5});
+          // setTimeout(function(){$('#subscribe-msg').slideToggle('slow');},3000);
+        }else{
+          $.get('/subscribe',{email:email}, function(data) {
+            // console.log(data);
+            if(data.status == 0){
+              layer.msg(data.msg,{time:3000,icon:6});
+            }else{
+              layer.msg(data.msg,{time:3000,icon:5});
+            }
+            // $('#subscribe-span').html('你已成功订阅该栏目，同时你也会收到一封提醒邮件.');
+          });
+        }
+      })
+        
+      // Unsubscribe
+      $('button#unsubscribe').click(function(){
+        email = $('input#unsubscribe').val();
+        if(email==''||(!email.match('^([a-zA-Z0-9_-])+((\.)?([a-zA-Z0-9_-])+)+@([a-zA-Z0-9_-])+(\.([a-zA-Z0-9_-])+)+$'))){
+          // $('#unsubscribe-msg').html('请输入正确邮箱').slideToggle('slow');
+          // setTimeout(function(){$('#unsubscribe-msg').slideToggle('slow');},2000);
+        }else{
+          $.ajax({type: 'POST', dataType: 'json', url: tin.ajax_url, data: 'action=unsubscribe&email=' + email, cache: false, success:function(data){
+            $('#unsubscribe-span').html(data.msg);
+          }})
+        }
+      })
+    </script>

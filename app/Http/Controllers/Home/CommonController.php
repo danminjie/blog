@@ -37,7 +37,6 @@ class CommonController extends Controller
         $tagtotal = Article::pluck('art_tag','art_id')->count();
         //去除重复的
         $tags = array_unique($tags);
-
         //获取友情链接
         $links = Link::get();
         //将大类传入公共变量

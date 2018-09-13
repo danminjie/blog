@@ -11,7 +11,7 @@
       <!-- Login status --> 
       @if(session('homeuser'))
       <div id="login-reg"> 
-        <span class="user-login ie_pie only-login">{{session()->get('homeuser')->user_name}}</span>
+        <span class="user-login ie_pie only-login">{{ session('homeuser')->user_name }}</span>
         <span class="user-login ie_pie only-login" onclick="location='{{url('/logout')}}'">退出</span>
       </div>             
       @else
@@ -28,15 +28,9 @@
         关注我们
        <div id="focus-slide" class="ie_pie"> 
         <div class="focus-title">
-         关注我们
+         加入我们
         </div> 
-        <p class="focus-content"> <a href="http://weibo.com/iydu" target="_blank" class="sinaweibo"><span><i class="fa fa-weibo"></i>新浪微博</span></a> <a href="http://t.qq.com/iydu_net" target="_blank" class="sinaweibo"><span><i class="fa fa-tencent-weibo"></i>腾讯微博</span></a> </p> 
-        <div class="focus-title">
-         联系我们
-        </div> 
-        <p class="focus-content" style="line-height: 20px;margin-bottom: 10px;"> <a href="http://wpa.qq.com/msgrd?v=3&amp;uin=55002834&amp;site=qq&amp;menu=yes" target="_blank" class="qq"><span><i class="fa fa-qq"></i>QQ</span></a> 
-         <!-- 可删除 --> <a target="_blank" href="http://shang.qq.com/wpa/qunwpa?idkey=5be294c49da03845dbea3c774294f7da4c2cc682cf43f98c543118c1193403f6"><i class="fa fa-users">&nbsp;&nbsp;</i>加入QQ群</a>
-         <!-- 删除截止 --> </p>  
+        <p class="focus-content"> <a href="http://wpa.qq.com/msgrd?v=3&amp;uin=578760087&amp;site=qq&amp;menu=yes" target="_blank" class="qq"><span><i class="fa fa-qq"></i>QQ</span></a> <a target="_blank" href="http://shang.qq.com/wpa/qunwpa?idkey=f51f32c3605f587a02846c8801d2202d956669a0373cc7e7202179521d7cf7ff"><i class="fa fa-users">&nbsp;&nbsp;</i>加入QQ群</a> </p> 
         <form action="http://list.qq.com/cgi-bin/qf_compose_send" target="_blank" method="post"> 
          <input type="hidden" name="t" value="qf_booked_feedback" /> 
          <input type="hidden" name="id" value="http://list.qq.com/cgi-bin/qf_invite?id=a14dea03f30a87ef45020939d38f0a063282dd05c2349cc2" /> 

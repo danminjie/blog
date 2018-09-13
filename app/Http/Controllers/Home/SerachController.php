@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Home;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Article;
+use Mail;
 
 class SerachController extends CommonController
 {
@@ -22,5 +23,38 @@ class SerachController extends CommonController
             ->paginate(10);
         $total = count($lists);
     	return view('home.serach',['lists'=>$lists,'total'=>$total,'request'=>$request]);
+    }
+
+    //邮件订阅
+    public function subscribe(Request $request)
+    {
+    	$input = $request->all();
+    	$input['status'] = 1;
+    	$sub = \DB::table('subscribe')->where('email',$input['email'])->first();	
+    	if (!is_object($sub)) {
+			$res = \DB::table('subscribe')->insert(['email'=>$input['email'],'status'=>0]);
+	    	if ($res) {
+	    		$data = [
+	    			'status' => 0,
+	    			'msg'    => '你已成功订阅该栏目，同时你也会收到一封提醒邮件'
+	    		];
+	    		//订阅成功后，发送提醒邮件
+				Mail::send('email.subscribe',['email'=>$input['email']],function ($m) use ($input) {
+                	$m->to($input['email'], $input['email'])->subject('订阅成功');
+            	});	    		
+	    	}else{
+				$data = [
+	    			'status' => 1,
+	    			'msg'    => '订阅失败'
+	    		];   		
+	    	}    		
+    	}else{
+			$data = [
+    			'status' => 1,
+    			'msg'    => '您已经订阅过了,请勿重复提交'
+    		];       		
+    	}
+    	
+    	return $data;
     }
 }

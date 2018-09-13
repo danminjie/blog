@@ -19,10 +19,15 @@ Route::get('/index','Home\IndexController@index');
 Route::get('/list/{id}','Home\IndexController@list');
 //详情页
 Route::get('/detail/{id}','Home\IndexController@detail');
+//评论
+Route::post('/dodetmsg','Home\IndexController@dodetmsg');
+
 //留言
-Route::get('/message','Home\IndexController@message');
+Route::get('/message','Home\MessageController@message');
 //处理留言
-Route::post('/domessage','Home\IndexController@domessage');
+Route::post('/domessage','Home\MessageController@domessage');
+//留言回复
+Route::post('/messagehuifu','Home\MessageController@messagehuifu');
 //收藏
 Route::post('/collect','Home\IndexController@collect');
 
@@ -56,6 +61,8 @@ Route::get('/exists','Home\LoginController@exists');
 	Route::post('/dophoneforget','Home\LoginController@dophoneforget');
 //搜索
 	Route::get('/serach','Home\SerachController@serach');
+//邮件订阅
+	Route::get('/subscribe','Home\SerachController@subscribe');
 
 //发送短信短信
 Route::get('/sendsms','Home\LoginController@sendsms');
@@ -136,4 +143,11 @@ Route::group(['prefix'=>'admin','namespace'=>'Admin','middleware'=>['islogin','h
 	//批量删除
 	Route::get('link/del','LinkController@delAll');	
 	Route::resource('link','LinkController');
+
+	//邮件订阅
+	Route::get('subemail/index','SubemailController@index');
+	//删除邮件订阅	
+	Route::get('subemail/del/{id}','SubemailController@del');
+	Route::get('subemail/allemail','SubemailController@allemail');
+
 });

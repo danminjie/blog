@@ -9,6 +9,8 @@
   @include('home.public.style')
   {{-- js begin --}}
   @include('home.public.script')
+    <script type="text/javascript" src="{{ asset('home/js/jquery.min.js?ver=4.3.6') }}"></script> 
+    <script type="text/javascript" src="{{ asset('home/js/layer.js') }}"></script>   
   {{-- js end --}}
  </head> 
  <body id="wrap" class="home blog"> 
@@ -52,16 +54,22 @@
               <span class="postlist-meta-time">{{date('Y-m-d',$n['art_time'])}}</span> 
               <span class="delim"></span> 
               <span class="postlist-meta-views">3&nbsp;℃</span> 
-              <span class="delim"></span> 
-              <span class="postlist-meta-comments"><i class="fa fa-comments"></i>&nbsp;<a href="http://www.iydu.net/5148.html#comments">0</a></span> 
+              <span class="delim"></span>  
               <div class="postlist-meta-like like-btn" style="float:right;" pid="5148" title="点击喜欢">
                <i class="fa fa-heart"></i>&nbsp;
                <span>{{$n['art_love']}}</span>&nbsp;
               </div>
-              <div class="postlist-meta-collect collect collect-no" uid="1" artid="{{$n['art_id']}}" style="float:right;cursor:default;" title="必须登录才能收藏">
+              @if (session('homeuser'))
+                <div class="postlist-meta-collect collect collect-no" uid="{{session('homeuser')->user_id}}" artid="{{$n['art_id']}}" style="float:right;cursor:default;" title="必须登录才能收藏">
                <i class="fa fa-star"></i>&nbsp;
                <span>{{$n['art_collect']}}</span>&nbsp;
-              </div> 
+              </div>
+              @else
+                <div class="postlist-meta-collect collect" onclick="layer.msg('必须登录才能收藏',{icon:5})" style="float:right;cursor:default;" title="必须登录才能收藏">
+                <i class="fa fa-star"></i>&nbsp;
+               <span>{{$n['art_collect']}}</span>&nbsp;
+              </div>                
+              @endif
              </div> 
              <p>{{$n['art_description']}}<a rel="nofollow" class="more-link" style="text-decoration:none;" href="{{ url('/list/'.$v['cate_id']) }}"></a> </p> 
             </article>
