@@ -30,6 +30,8 @@ Route::post('/domessage','Home\MessageController@domessage');
 Route::post('/messagehuifu','Home\MessageController@messagehuifu');
 //收藏
 Route::post('/collect','Home\IndexController@collect');
+//喜欢
+Route::get('/love','Home\IndexController@love');
 
 //前台登录
 Route::get('/login','Home\LoginController@login');

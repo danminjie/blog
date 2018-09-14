@@ -46,18 +46,18 @@
           @endphp        
         @foreach($lists as $k=>$v)
           <article class="home-blog-entry col span_1 clr"> 
-           <a href="http://www.iydu.net/5148.html" title="{{$v->art_title}}" class="fancyimg home-blog-entry-thumb"> 
+           <a href="{{ url('/detail/'.$v->art_id.'.html') }}" title="{{$v->art_title}}" class="fancyimg home-blog-entry-thumb"> 
             <div class="thumb-img"> 
              <img src="{{$v->art_thumb}}" alt="{{$v->art_title}}" /> 
              <span><i class="fa fa-pencil"></i></span> 
             </div> </a> 
            <div class="home-blog-entry-text clr"> 
-            <h3> <a href="{{ url('/detail/'.$v->art_id) }}" title="{{$v->art_title}}">{{$v->art_title}}</a> </h3> 
+            <h3> <a href="{{ url('/detail/'.$v->art_id.'.html') }}" title="{{$v->art_title}}">{{$v->art_title}}</a> </h3> 
             <!-- Post meta -->           
             <div class="meta"> 
              <span class="postlist-meta-time"><i class="fa fa-calendar"></i>{{time_ago($v->art_time)}} ({{date('m-d',$v->art_time)}})</span> 
              <span class="postlist-meta-views"><i class="fa fa-fire"></i>浏览: {{$v->art_view}}</span> 
-             <span class="postlist-meta-comments"><i class="fa fa-comments"></i><a href="{{ url('/detail/'.$v->art_id) }}"><span>评论: </span>{{Comment::where('post_id',$v->art_id)->count()}}</a></span> 
+             <span class="postlist-meta-comments"><i class="fa fa-comments"></i><a href="{{ url('/detail/'.$v->art_id.'.html') }}"><span>评论: </span>{{Comment::where('post_id',$v->art_id)->count()}}</a></span> 
             </div>
             <!-- /.Post meta --> 
             <p> {{$v->art_description}}<a rel="nofollow" class="more-link" style="text-decoration:none;" href="http://www.iydu.net/5148.html"></a></p> 

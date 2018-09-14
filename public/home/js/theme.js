@@ -80,13 +80,50 @@ $(function(){
 
 // 点击喜欢
 $(".like-btn").click(function(){
-      var _this = $(this);
-      //文章id
-      var artid = _this.attr('artid');
-      //用户id
-      var uid = _this.attr('uid');
-      if(_this.hasClass('love-yes')) return;
-	  $.ajax({type: 'POST', xhrFields: {withCredentials: true}, dataType: 'html', url: tin.ajax_url, data: 'action=like&pid=' + pid, cache: false, success: function(){var num = _this.children("span").text();_this.children("span").text(Number(num)+1);_this.addClass("love-animate").attr("title","已喜欢");setTimeout(function(){_this.removeClass('love-animate').addClass('love-yes');},500);}});
+  var _this = $(this);
+  //文章id
+  var artid = _this.attr('artid');
+  //用户id
+  var uid = _this.attr('uid');
+  if(_this.attr('title') == '点击喜欢'){
+    $.ajax({
+      type: 'GET', 
+      xhrFields: {withCredentials: true}, 
+      dataType: 'html', 
+      url: 'love', 
+      data: 'uid=' + uid + '&artid=' + artid + '&act=love', 
+      cache: false, 
+      success: function(data){
+        console.log(data);
+        var num = _this.children("span").text();
+        _this.children("span").text(Number(num)+1);
+        _this.addClass("love-animate").attr("title","已喜欢");
+        setTimeout(function(){
+          _this.removeClass('love-animate').addClass('love-yes');
+        },500);
+      }
+    });
+  }else if(_this.attr('title') == '已喜欢'){
+    $.ajax({
+      type: 'GET', 
+      xhrFields: {withCredentials: true}, 
+      dataType: 'html', 
+      url: 'love', 
+      data: 'uid=' + uid + '&artid=' + artid + '&act=unlove', 
+      cache: false, 
+      success: function(){
+        var num = _this.children("span").text();
+        _this.children("span").text(Number(num)-1);
+        _this.addClass("love-animate").attr("title","点击喜欢");
+        setTimeout(function(){
+          _this.removeClass('love-animate').addClass('love-yes');
+        },500);
+      }
+    });    
+  }else{
+    return;
+  }
+  
 });
 
 //点击收藏或取消收藏

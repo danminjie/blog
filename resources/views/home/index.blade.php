@@ -44,28 +44,35 @@
           @foreach($v['article'] as $m=>$n)
              @if($n['art_status'] == 1)           
             <article class="home-blog-entry clr"> 
-             <a href="{{ url('/detail/'.$n['art_id']) }}" title="{{$n['art_title']}}" class="fancyimg home-blog-entry-thumb"> 
+             <a href="{{ url('/detail/'.$n['art_id'].'.html') }}" title="{{$n['art_title']}}" class="fancyimg home-blog-entry-thumb"> 
               <div class="thumb-img"> 
                <img src="{{ url($n['art_thumb']) }}" alt="{{$n['art_title']}}" /> 
                <span><i class="fa fa-pencil"></i></span> 
               </div> </a> 
-             <h3><a href="{{ url('/detail/'.$n['art_id']) }}" title="{{$n['art_title']}}">{{$n['art_title']}}</a></h3> 
+             <h3><a href="{{ url('/detail/'.$n['art_id'].'.html') }}" title="{{$n['art_title']}}">{{$n['art_title']}}</a></h3> 
              <div class="postlist-meta"> 
               <span class="postlist-meta-time">{{date('Y-m-d',$n['art_time'])}}</span> 
               <span class="delim"></span> 
               <span class="postlist-meta-views">3&nbsp;℃</span> 
-              <span class="delim"></span>  
-              <div class="postlist-meta-like like-btn" style="float:right;" pid="5148" title="点击喜欢">
+              <span class="delim"></span>
+              @if (session('homeuser'))
+              <div class="postlist-meta-like like-btn love-no"  style="float:right;" uid="{{session('homeuser')->user_id}}" artid="{{$n['art_id']}}" title="点击喜欢">
                <i class="fa fa-heart"></i>&nbsp;
                <span>{{$n['art_love']}}</span>&nbsp;
               </div>
+              @else
+              <div class="postlist-meta-like" style="float:right;" onclick="layer.msg('没有登录不让喜欢,谢谢合作',{icon:5})" title="点击喜欢">
+               <i class="fa fa-heart"></i>&nbsp;
+               <span>{{$n['art_love']}}</span>&nbsp;
+              </div>              
+              @endif
               @if (session('homeuser'))
-                <div class="postlist-meta-collect collect collect-no" uid="{{session('homeuser')->user_id}}" artid="{{$n['art_id']}}" style="float:right;cursor:default;" title="必须登录才能收藏">
+                <div class="postlist-meta-collect collect collect-no" uid="{{session('homeuser')->user_id}}" artid="{{$n['art_id']}}" style="float:right;cursor:default;" title="点击收藏">
                <i class="fa fa-star"></i>&nbsp;
                <span>{{$n['art_collect']}}</span>&nbsp;
               </div>
               @else
-                <div class="postlist-meta-collect collect" onclick="layer.msg('必须登录才能收藏',{icon:5})" style="float:right;cursor:default;" title="必须登录才能收藏">
+                <div class="postlist-meta-collect collect" onclick="layer.msg('没有登录不让收藏,谢谢合作',{icon:5})" style="float:right;cursor:default;" title="必须登录才能收藏">
                 <i class="fa fa-star"></i>&nbsp;
                <span>{{$n['art_collect']}}</span>&nbsp;
               </div>                
@@ -82,12 +89,12 @@
             @foreach($v['article'] as $m=>$n)
             @if($n['art_status'] == 0 && $m<=5)
             <article class="clr col-small"> 
-             <a href="{{ url('/detail/'.$n['art_id']) }}" title="{{$n['art_title']}}" class="fancyimg home-blog-entry-thumb"> 
+             <a href="{{ url('/detail/'.$n['art_id'].'.html') }}" title="{{$n['art_title']}}" class="fancyimg home-blog-entry-thumb"> 
               <div class="thumb-img"> 
                <img src="{{ url($n['art_thumb']) }}" /> 
                <span><i class="fa fa-pencil"></i></span> 
               </div> </a> 
-             <h3><a href="{{ url('/detail/'.$n['art_id']) }}" title="{{$n['art_title']}}">{{$n['art_title']}}</a></h3> 
+             <h3><a href="{{ url('/detail/'.$n['art_id'].'.html') }}" title="{{$n['art_title']}}">{{$n['art_title']}}</a></h3> 
              <p>{{$n['art_description']}}<a rel="nofollow" class="more-link" style="text-decoration:none;" href="{{ url('/detail/'.$n['art_id']) }}"></a> </p> 
             </article> 
             @endif

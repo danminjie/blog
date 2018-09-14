@@ -8,6 +8,7 @@ use App\Model\Cate;
 use App\Model\Article;
 use App\Model\Collect;
 use App\Model\Comment;
+use App\Model\Love;
 
 
 class IndexController extends CommonController
@@ -71,6 +72,65 @@ class IndexController extends CommonController
 		}
 	}
 
+    //喜欢
+    public function love(Request $request)
+    {
+        //获取参数
+        $uid = $request->input('uid');
+        $artid = $request->input('artid');
+        $act = $request->input('act');
+        //判断是加入收藏还是取消先收藏
+        switch ($act) {
+            //收藏操作
+            case 'love':
+                //判断是否已经收藏过
+                $collect = Love::where([
+                    ['uid','=',$uid],
+                    ['art_id','=',$artid]
+                ])->get();
+               //未被收藏过了
+               if($collect->isEmpty()){
+                   //添加收藏记录
+                    $res = Love::create(['uid'=>$uid,'art_id'=>$artid]);
+                    Article::where('art_id',$artid)->increment('art_love');
+                    //如果收藏成功
+                    if($res){
+                        return response()->json(['status'=>0,'msg'=>'已收藏']);
+                    }else{
+                        return response()->json(['status'=>1,'msg'=>'收藏失败']);
+                    }
+               }else{
+                   return response()->json(['status'=>0,'msg'=>'已收藏']);
+               }
+
+                break;
+            
+            //取消收藏操作
+            case 'unlove':
+                //判断是否已经收藏过
+                $collect = Love::where([
+                    ['uid','=',$uid],
+                    ['art_id','=',$artid]
+                ])->first();
+                //已收藏
+                if(!empty($collect)){
+                    //文章收藏数量减1
+                    Article::where('art_id',$artid)->decrement('art_love');
+                    //取消收藏
+                    $res = $collect->delete();
+                    if ($res) {
+                        return response()->json(['status'=>0,'msg'=>'请收藏']);
+                    }else{
+                        return response()->json(['status'=>0,'msg'=>'取消收藏失败']);
+                    }
+                }else{
+                    return response()->json(['status'=>0,'msg'=>'请收藏']);
+                }           
+                break;          
+
+        }
+    }    
+
     //前台首页
     public function index()
     {
@@ -83,7 +143,7 @@ class IndexController extends CommonController
     //列表页
     public function list($id)
     {
-    	$lists = Article::orderBy('art_status','DESC')->where('cate_id',$id)->paginate(2);
+    	$lists = Article::orderBy('art_status','DESC')->where('cate_id',$id)->paginate(5);
     	$catename = Cate::find($id);
     	return view('home.lists',['lists'=>$lists,'catename'=>$catename]);
     }
