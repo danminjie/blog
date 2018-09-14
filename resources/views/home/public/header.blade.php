@@ -16,7 +16,7 @@
       </div>             
       @else
       <div id="login-reg"> 
-       <span class="user-login ie_pie only-login" onclick="location='{{url('/register')}}'">注册</span> 
+       <span class="user-login ie_pie only-login" onclick="location='{{url('/phoneregister')}}'">注册</span> 
       </div>      
       <div id="login-reg"> 
        <span class="user-login ie_pie only-login" onclick="location='{{url('/login')}}'"> 登录</span> 

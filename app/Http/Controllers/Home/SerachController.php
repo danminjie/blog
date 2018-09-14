@@ -57,4 +57,27 @@ class SerachController extends CommonController
     	
     	return $data;
     }
+
+    
+    //邮件退订
+    public function tuiding()
+    {
+        return view('home.tuiding');
+    }
+
+    //处理退订
+    public function dotuiding(Request $request)
+    {
+        $input = $request->except('_token');
+        $sub = \DB::table('subscribe')->where('email',$input['user_name'])->first();
+        if (!$sub) {
+            return back()->with('msg','您还没有订阅,哪来的退订');
+        }
+        $res = \DB::table('subscribe')->where('email',$input['user_name'])->delete();
+        if ($res) {
+            return back()->with('msg','退订成功,请点击左上角LOGO返回博客');
+        }else{
+            return back()->with('msg','退订失败,请重试');
+        }
+    }
 }

@@ -9,5 +9,6 @@
 </head>
 <body>
     <p>尊敬的{{ $email }},恭喜您，订阅成功，这是一封提醒邮件！</p>
+    <p style="margin-top: 150px"><a href="{{ url('tuiding') }}">退订请点击此处</a></p>
 </body>
 </html>

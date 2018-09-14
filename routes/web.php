@@ -31,7 +31,6 @@ Route::post('/messagehuifu','Home\MessageController@messagehuifu');
 //收藏
 Route::post('/collect','Home\IndexController@collect');
 
-
 //前台登录
 Route::get('/login','Home\LoginController@login');
 Route::post('/dologin','Home\LoginController@dologin');
@@ -63,6 +62,9 @@ Route::get('/exists','Home\LoginController@exists');
 	Route::get('/serach','Home\SerachController@serach');
 //邮件订阅
 	Route::get('/subscribe','Home\SerachController@subscribe');
+	//邮件退订
+	Route::get('/tuiding','Home\SerachController@tuiding');
+	Route::post('/dotuiding','Home\SerachController@dotuiding');
 
 //发送短信短信
 Route::get('/sendsms','Home\LoginController@sendsms');

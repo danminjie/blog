@@ -60,4 +60,6 @@ class SubemailController extends Controller
     	}
     	return $data;
     }
+
+    
 }
