@@ -57,7 +57,7 @@
   <!-- Nav --> 
   <!-- Moblie nav--> 
   <div id="body-container"> 
-   
+  @include('home.public.navmenue')
    <!-- /.Moblie nav --> 
    <section id="content-container" style="background:#f1f4f9; "> 
     @include('home.public.header')

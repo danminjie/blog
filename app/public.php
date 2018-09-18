@@ -54,8 +54,8 @@ use App\SMS\SendSMS;
     //处理邮箱星号
     function substr_cut($user_name){
         $strlen     = mb_strlen($user_name, 'utf-8');
-        $firstStr     = mb_substr($user_name, 0, 6, 'utf-8');
-        $lastStr     = mb_substr($user_name, -1, 6, 'utf-8');
+        $firstStr     = mb_substr($user_name, 0, 3, 'utf-8');
+        $lastStr     = mb_substr($user_name, -1, 12, 'utf-8');
         return $strlen == 1 ? $firstStr . str_repeat('*', mb_strlen($user_name, 'utf-8') - 10) : $firstStr . str_repeat("*", $strlen - 10) . $lastStr;
     }
 ?>
